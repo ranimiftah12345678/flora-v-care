@@ -18,7 +18,8 @@ class AuthorizationTest extends TestCase
     {
         $this->actingAs(User::factory()->create())
             ->get(route('admin.dashboard'))
-            ->assertForbidden();
+            ->assertForbidden()
+            ->assertSee('Akses ditolak');
     }
 
     public function test_posttest_is_locked_until_learning_progress_is_complete(): void
