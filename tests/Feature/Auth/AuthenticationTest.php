@@ -22,11 +22,11 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->post('/login', [
-            'email' => $user->email,
+            'username' => $user->username,
             'password' => 'password',
         ]);
 
-        $this->assertAuthenticated();
+        $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('dashboard', absolute: false));
     }
 
@@ -34,12 +34,64 @@ class AuthenticationTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->post('/login', [
-            'email' => $user->email,
+        $response = $this->post('/login', [
+            'username' => $user->username,
             'password' => 'wrong-password',
         ]);
 
         $this->assertGuest();
+        $response->assertSessionHasErrors([
+            'username' => 'Nama pengguna atau kata sandi tidak sesuai.',
+        ]);
+    }
+
+    public function test_login_is_limited_after_five_failed_attempts_per_minute(): void
+    {
+        $user = User::factory()->create();
+
+        foreach (range(1, 5) as $attempt) {
+            $this->post('/login', [
+                'username' => $user->username,
+                'password' => 'wrong-password',
+            ]);
+        }
+
+        $response = $this->post('/login', [
+            'username' => $user->username,
+            'password' => 'wrong-password',
+        ]);
+
+        $response->assertSessionHasErrors('username')
+            ->assertSessionHas('errors', fn ($errors): bool => str_contains(
+                (string) $errors->getBag('default')->first('username'),
+                'Terlalu banyak percobaan masuk.',
+            ));
+    }
+
+    public function test_admin_account_cannot_authenticate_through_student_login(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->post('/login', [
+            'username' => $admin->username,
+            'password' => 'password',
+        ]);
+
+        $this->assertGuest();
+        $response->assertSessionHasErrors('username');
+    }
+
+    public function test_inactive_account_is_not_authenticated(): void
+    {
+        $user = User::factory()->inactive()->create();
+
+        $response = $this->post('/login', [
+            'username' => $user->username,
+            'password' => 'password',
+        ]);
+
+        $this->assertGuest();
+        $response->assertSessionHasErrors('username');
     }
 
     public function test_users_can_logout(): void
@@ -49,6 +101,6 @@ class AuthenticationTest extends TestCase
         $response = $this->actingAs($user)->post('/logout');
 
         $this->assertGuest();
-        $response->assertRedirect('/');
+        $response->assertRedirect(route('login'));
     }
 }

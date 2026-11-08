@@ -5,11 +5,16 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\View\View;
 
 class PasswordController extends Controller
 {
+    public function create(): View
+    {
+        return view('auth.password-required');
+    }
+
     /**
      * Update the user's password.
      */
@@ -20,10 +25,13 @@ class PasswordController extends Controller
             'password' => ['required', Password::defaults(), 'confirmed'],
         ]);
 
-        $request->user()->update([
-            'password' => Hash::make($validated['password']),
-        ]);
+        $request->user()->forceFill([
+            'password' => $validated['password'],
+            'password_change_required' => false,
+        ])->save();
 
-        return back()->with('status', 'password-updated');
+        return redirect()->route(
+            $request->user()->role === 'admin' ? 'admin.dashboard' : 'dashboard',
+        )->with('status', 'password-updated');
     }
 }

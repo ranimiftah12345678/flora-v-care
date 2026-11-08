@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\ActivityLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,25 +17,31 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        if ($request->user()->role === 'admin') {
+            return view('admin.profile', [
+                'user' => $request->user(),
+                'loginHistories' => $request->user()->loginHistories()->latest('logged_in_at')->limit(10)->get(),
+            ]);
+        }
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $request->user()->load('studentProfile'),
         ]);
     }
 
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request, ActivityLogger $logger): RedirectResponse
     {
         $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $logger->log('ubah_profil', $request->user(), 'Profil pengguna diperbarui', $request->user());
+
+        return Redirect::route($request->user()->role === 'admin' ? 'admin.profile' : 'profile.edit')
+            ->with('status', 'profile-updated');
     }
 
     /**
