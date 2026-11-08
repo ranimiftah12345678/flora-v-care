@@ -29,6 +29,7 @@ class StudentController extends Controller
             ->groupBy(fn ($attempt): string => $attempt->test->type)
             ->map(fn ($studentAttempts) => $studentAttempts->first());
         $progress = $student->learningProgress->keyBy(fn ($item): string => $item->content_type.':'.$item->content_id);
+        $loginHistories = $student->loginHistories()->latest()->limit(10)->get();
 
         return view('admin.student-detail', [
             'student' => $student,
@@ -36,7 +37,8 @@ class StudentController extends Controller
             'materials' => Material::query()->where('is_published', true)->orderBy('sort_order')->get(),
             'videos' => Video::query()->where('is_published', true)->orderBy('sort_order')->get(),
             'progress' => $progress,
-            'activities' => $student->activityLogs()->latest()->limit(20)->get(),
+            'activities' => $student->activityLogs()->latest()->limit(15)->get(),
+            'loginHistories' => $loginHistories,
         ]);
     }
 
@@ -50,13 +52,14 @@ class StudentController extends Controller
                 $query->where(function ($query) use ($search): void {
                     $query->where('name', 'like', $search)
                         ->orWhere('username', 'like', $search)
-                        ->orWhereHas('studentProfile', fn ($profileQuery) => $profileQuery->where('sekolah', 'like', $search));
+                        ->orWhereHas('studentProfile', fn ($profileQuery) => $profileQuery->where('inisial', 'like', $search));
                 });
             })
             ->when($request->input('status') === 'active', fn ($query) => $query->where('is_active', true))
             ->when($request->input('status') === 'inactive', fn ($query) => $query->where('is_active', false))
+            ->when($request->filled('kelas'), fn ($query) => $query->whereHas('studentProfile', fn ($profileQuery) => $profileQuery->where('kelas', $request->input('kelas'))))
             ->latest('id')
-            ->paginate(20)
+            ->paginate(15)
             ->withQueryString();
 
         return view('admin.students', [
@@ -86,14 +89,18 @@ class StudentController extends Controller
             'kelas' => ['required', Rule::in(['X', 'XI', 'XII'])],
             'usia' => ['required', 'integer', 'between:10,25'],
             'sekolah' => ['required', 'string', 'max:150'],
+            'temporary_password' => ['nullable', 'string', 'min:10'],
         ]);
 
-        $temporaryPassword = Str::password(16);
+        $temporaryPassword = $request->filled('temporary_password')
+            ? (string) $request->input('temporary_password')
+            : Str::password(10);
+
         $student = DB::transaction(function () use ($validated, $temporaryPassword): User {
             $student = new User;
             $student->name = $validated['name'];
             $student->username = $validated['username'];
-            $student->email = $validated['email'] ?? null;
+            $student->email = null;
             $student->password = Hash::make($temporaryPassword);
             $student->role = 'siswi';
             $student->is_active = true;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Question;
 use App\Models\Test;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,9 +16,17 @@ class TestSettingController extends Controller
 {
     public function index(): View
     {
+        $tests = Test::query()->withCount('questions')->orderBy('type')->get();
+
         return view('admin.test-settings', [
-            'tests' => Test::query()->withCount('questions')->orderBy('type')->get(),
+            'tests' => $tests,
             'questions' => Question::query()->orderBy('sort_order')->orderBy('id')->get(),
+            'siswiAttemptCounts' => $tests->mapWithKeys(fn (Test $test) => [
+                $test->type => User::query()
+                    ->where('role', 'siswi')
+                    ->whereHas('testAttempts', fn ($query) => $query->where('test_id', $test->id)->whereNotNull('submitted_at'))
+                    ->count(),
+            ]),
         ]);
     }
 
@@ -38,13 +47,13 @@ class TestSettingController extends Controller
         $test = Test::query()->where('type', $type)->firstOrFail();
         $questionIds = array_map('intval', $validated['question_ids'] ?? []);
 
-        if (($validated['is_open'] ?? false) && count($questionIds) <= 30) {
+        if (($validated['is_open'] ?? false) && count($questionIds) !== 30) {
             return back()->withErrors([
-                'question_ids' => 'Tes hanya dapat dibuka jika memiliki lebih dari 30 pertanyaan.',
+                'question_ids' => 'Tes hanya dapat dibuka jika memiliki tepat 30 pertanyaan.',
             ])->withInput();
         }
 
-        if ($test->attempts()->whereHas('answers')->exists()) {
+        if ($test->attempts()->whereNotNull('submitted_at')->exists()) {
             $currentQuestionIds = $test->questions()->pluck('questions.id')->map(fn ($id): int => (int) $id)->all();
             sort($currentQuestionIds);
             $submittedQuestionIds = $questionIds;

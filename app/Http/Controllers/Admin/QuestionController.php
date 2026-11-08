@@ -37,8 +37,8 @@ class QuestionController extends Controller
             : $request->input('question_text')]);
 
         $validated = $request->validate([
-            'question_text' => ['required', 'string', 'max:2000', 'regex:/\?$/u'],
-            'aspect' => ['required', Rule::in(self::ASPECTS)],
+            'question_text' => ['required', 'string', 'max:1000', 'regex:/\?$/u'],
+            'aspect' => ['nullable', Rule::in(self::ASPECTS)],
             'is_unfavorable' => ['nullable', 'boolean'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
         ], [
@@ -51,13 +51,15 @@ class QuestionController extends Controller
                 'is_unfavorable' => (bool) ($validated['is_unfavorable'] ?? false),
             ]);
 
-            $pretest = Test::query()->where('type', 'pretest')->firstOrFail();
-            $pretest->questions()->attach($question->id, [
-                'sort_order' => $pretest->questions()->count() + 1,
-            ]);
+            foreach (['pretest', 'posttest'] as $type) {
+                $test = Test::query()->where('type', $type)->firstOrFail();
+                $test->questions()->attach($question->id, [
+                    'sort_order' => $test->questions()->count() + 1,
+                ]);
+            }
         });
 
-        return redirect()->route('admin.questions')->with('status', 'Pertanyaan berhasil ditambahkan ke pretest.');
+        return redirect()->route('admin.questions')->with('status', 'Pertanyaan berhasil ditambahkan ke pretest dan posttest.');
     }
 
     public function edit(Question $question): View
@@ -77,8 +79,8 @@ class QuestionController extends Controller
             : $request->input('question_text')]);
 
         $rules = [
-            'question_text' => ['required', 'string', 'max:2000', 'regex:/\?$/u'],
-            'aspect' => ['required', Rule::in(self::ASPECTS)],
+            'question_text' => ['required', 'string', 'max:1000', 'regex:/\?$/u'],
+            'aspect' => ['nullable', Rule::in(self::ASPECTS)],
             'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
         ];
 
