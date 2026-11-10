@@ -100,7 +100,7 @@ class StudentController extends Controller
             $student = new User;
             $student->name = $validated['name'];
             $student->username = $validated['username'];
-            $student->email = null;
+            $student->email = $validated['email'] ?? null;
             $student->password = Hash::make($temporaryPassword);
             $student->role = 'siswi';
             $student->is_active = true;

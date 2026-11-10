@@ -14,8 +14,17 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(Request $request): View|RedirectResponse
     {
+        // Jika sedang login sebagai admin dan ingin membuka login/portal siswi, logout admin terlebih dahulu
+        if (Auth::check() && $request->user()?->role === 'admin') {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        } elseif (Auth::check() && $request->user()?->role === 'siswi') {
+            return redirect()->route('dashboard');
+        }
+
         return view('auth.login');
     }
 

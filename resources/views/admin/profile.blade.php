@@ -1,10 +1,25 @@
 <x-admin-layout title="Profil Administrator" active="profile">
     <section class="admin-page-heading"><div><span class="admin-eyebrow">AKUN &amp; PENGATURAN / PROFIL</span><h1>Profil Administrator &amp; Keamanan</h1><p>Perbarui informasi akun dan tinjau riwayat sesi masuk.</p></div><span class="admin-status">Administrator aktif</span></section>
-    @if (session('status'))<div class="admin-feedback" role="status">Profil berhasil diperbarui.</div>@endif
+    @if (session('status'))<div class="admin-feedback" role="status">{{ session('status') === 'avatar-updated' ? 'Foto profil berhasil diperbarui.' : 'Profil berhasil diperbarui.' }}</div>@endif
     @if ($errors->any())<div class="admin-feedback admin-feedback-error" role="alert">{{ $errors->first() }}</div>@endif
     <div class="admin-profile-grid">
         <div class="admin-editor-main">
-            <section class="admin-panel admin-form"><div class="admin-panel-heading"><div><span class="admin-eyebrow">PROFIL ADMIN</span><h2>Informasi akun</h2></div><span class="admin-profile-avatar">{{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}</span></div>
+            <section class="admin-panel admin-form"><div class="admin-panel-heading"><div><span class="admin-eyebrow">PROFIL ADMIN</span><h2>Informasi akun</h2></div>
+                <div class="avatar-upload avatar-upload-admin" title="Ubah foto profil">
+                    <label for="admin-avatar-input">
+                        @if ($avatar = $user->avatarUrl())
+                            <img src="{{ $avatar }}" alt="Foto profil {{ $user->name }}" class="profile-avatar-photo admin-avatar-photo">
+                        @else
+                            <span class="admin-profile-avatar">{{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}</span>
+                        @endif
+                    </label>
+                    <span class="avatar-upload-hint"><span aria-hidden="true">✎</span> Ubah foto</span>
+                    <form id="admin-avatar-form" method="POST" action="{{ route('profile.avatar.update') }}" enctype="multipart/form-data">
+                        @csrf
+                        <input id="admin-avatar-input" type="file" name="avatar" accept="image/jpeg,image/png,image/webp" hidden onchange="document.getElementById('admin-avatar-form').submit()">
+                    </form>
+                </div>
+            </div>
                 <form method="POST" action="{{ route('profile.update') }}">@csrf @method('PATCH')
                     <label for="admin-name">Nama tampilan</label><input id="admin-name" name="name" type="text" value="{{ old('name', $user->name) }}" maxlength="255" required>
                     <label for="admin-email">Email</label><input id="admin-email" name="email" type="email" value="{{ old('email', $user->email) }}" maxlength="255" required>

@@ -2,8 +2,10 @@
     <x-slot name="title">Masuk Akun Siswi</x-slot>
 
     <div class="login-layout">
-        <a class="back-link" href="{{ route('home') }}"><span aria-hidden="true">←</span> Kembali ke Beranda</a>
-        <div class="login-meta"><span>◉ Tahun Ajaran 2024/2025</span><span>✦ Portal Masuk Siswi SMK Arga Husada</span></div>
+        <div class="login-topline">
+            <a class="back-link" href="{{ route('home') }}"><span aria-hidden="true">←</span> Kembali ke Beranda</a>
+            <div class="login-meta"><span>◉ Tahun Ajaran {{ now()->month >= 7 ? now()->year.'/'.(now()->year + 1) : (now()->year - 1).'/'.now()->year }}</span><span>✦ Portal Masuk Siswi SMK Arga Husada</span></div>
+        </div>
 
         <div class="auth-columns login-columns">
             <aside class="auth-story story-login">

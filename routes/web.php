@@ -73,6 +73,7 @@ Route::middleware(['auth', 'active', 'role:siswi', 'activity', 'password.changed
 Route::middleware(['auth', 'active', 'activity', 'password.changed'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/avatar', [ProfileController::class, 'updateAvatar'])->name('profile.avatar.update');
 });
 
 Route::middleware(['auth', 'active', 'role:admin', 'activity', 'password.changed'])->prefix('admin')->group(function () {

@@ -5,7 +5,7 @@
         <div class="lesson-layout">
             <main class="lesson-article">
                 <aside class="student-disclaimer lesson-disclaimer"><span aria-hidden="true">ⓘ</span><div><strong>Informasi edukasi — bukan diagnosis medis</strong><p>Materi ini membantu pembelajaran umum dan tidak menggantikan pemeriksaan tenaga kesehatan.</p></div></aside>
-                @if ($material->image)<img class="lesson-image" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($material->image) }}" alt="">@endif
+                @if ($material->image)<img class="lesson-image" src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($material->image) }}" alt="Ilustrasi materi {{ $material->title }}">@endif
                 <section class="lesson-content-section"><p>{!! nl2br(e($material->body)) !!}</p></section>
                 <div id="lesson-completion-sentinel" aria-hidden="true"></div>
                 <p id="lesson-progress-status" class="student-muted" role="status" aria-live="polite">{{ $isCompleted ? 'Progres tersimpan.' : 'Gulir sampai akhir materi untuk mencatat penyelesaian.' }}</p>

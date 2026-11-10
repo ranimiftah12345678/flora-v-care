@@ -3,10 +3,18 @@
     <section class="admin-stat-grid admin-stat-grid-four"><article class="admin-stat-card"><span>Aktivitas hari ini</span><strong>{{ $todayCount }}</strong><small>Semua jenis pengguna</small></article><article class="admin-stat-card"><span>Pengguna hari ini</span><strong>{{ $userCount }}</strong><small>Pengguna dengan aktivitas</small></article><article class="admin-stat-card"><span>Jenis aktivitas</span><strong>{{ $actions->count() }}</strong><small>Aksi tercatat</small></article><article class="admin-stat-card"><span>Retensi</span><strong>Sesuai kebijakan</strong><small>Tetapkan sebelum penggunaan produksi</small></article></section>
     <section class="admin-panel">
         <form class="admin-filter-row" method="GET" action="{{ route('admin.activity') }}">
-            <label for="activity-search">Cari aktivitas</label><input id="activity-search" class="admin-search-input" type="search" name="q" value="{{ request('q') }}" placeholder="Nama pengguna atau keterangan">
-            <select name="action" aria-label="Jenis aktivitas"><option value="">Semua jenis</option>@foreach ($actions as $action)<option value="{{ $action }}" @selected(request('action') === $action)>{{ str_replace('_', ' ', ucfirst($action)) }}</option>@endforeach</select>
-            <label for="activity-from">Dari</label><input id="activity-from" type="date" name="from" value="{{ request('from') }}">
-            <label for="activity-to">Sampai</label><input id="activity-to" type="date" name="to" value="{{ request('to') }}">
+            <label for="activity-search">Cari aktivitas</label>
+            <input id="activity-search" class="admin-search-input" type="search" name="q" value="{{ request('q') }}" placeholder="Nama pengguna atau keterangan">
+            <select name="action" aria-label="Jenis aktivitas">
+                <option value="">Semua jenis</option>
+                @foreach ($actions as $action)
+                    <option value="{{ $action }}" @selected(request('action') === $action)>{{ str_replace('_', ' ', ucfirst($action)) }}</option>
+                @endforeach
+            </select>
+            <label for="activity-from">Dari</label>
+            <input id="activity-from" type="date" name="from" value="{{ request('from') }}">
+            <label for="activity-to">Sampai</label>
+            <input id="activity-to" type="date" name="to" value="{{ request('to') }}">
             <button class="admin-button admin-button-outline" type="submit">Filter</button>
         </form>
         <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Waktu</th><th>Pengguna</th><th>Peran</th><th>Aktivitas</th><th>Keterangan</th></tr></thead><tbody>

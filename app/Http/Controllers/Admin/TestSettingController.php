@@ -47,13 +47,13 @@ class TestSettingController extends Controller
         $test = Test::query()->where('type', $type)->firstOrFail();
         $questionIds = array_map('intval', $validated['question_ids'] ?? []);
 
-        if (($validated['is_open'] ?? false) && count($questionIds) !== 30) {
+        if (($validated['is_open'] ?? false) && count($questionIds) <= 30) {
             return back()->withErrors([
-                'question_ids' => 'Tes hanya dapat dibuka jika memiliki tepat 30 pertanyaan.',
+                'question_ids' => 'Tes hanya dapat dibuka jika memiliki lebih dari 30 pertanyaan.',
             ])->withInput();
         }
 
-        if ($test->attempts()->whereNotNull('submitted_at')->exists()) {
+        if ($test->attempts()->whereHas('answers')->exists()) {
             $currentQuestionIds = $test->questions()->pluck('questions.id')->map(fn ($id): int => (int) $id)->all();
             sort($currentQuestionIds);
             $submittedQuestionIds = $questionIds;

@@ -83,7 +83,7 @@ class MaterialController extends Controller
             'category' => ['required', Rule::in(array_keys(Material::CATEGORIES))],
             'body' => ['required', 'string', 'max:50000'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'sort_order' => ['required', 'integer', 'min:0', 'max:10000],
+            'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
             'is_published' => ['nullable', 'boolean'],
         ]);
 

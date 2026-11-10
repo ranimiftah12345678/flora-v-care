@@ -23,9 +23,8 @@ class RegistrationTest extends TestCase
             'name' => 'Test User',
             'username' => 'Test.User',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-            'inisial' => 'tu',
+            'password' => 'Siswitest_01',
+            'password_confirmation' => 'Siswitest_01',
             'kelas' => 'X',
             'usia' => 16,
             'sekolah' => 'SMK Arga Husada',
@@ -34,10 +33,11 @@ class RegistrationTest extends TestCase
             'password_change_required' => true,
         ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertGuest();
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('status');
         $this->assertDatabaseHas('users', [
-            'username' => 'test.user',
+            'username' => 'Test.User',
             'role' => 'siswi',
             'is_active' => true,
             'password_change_required' => false,
@@ -50,15 +50,32 @@ class RegistrationTest extends TestCase
         ]);
     }
 
+    public function test_weak_passwords_are_rejected(): void
+    {
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'username' => 'test.weak',
+            'email' => 'weak@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'kelas' => 'X',
+            'usia' => 16,
+            'sekolah' => 'SMK Arga Husada',
+            'privacy_notice_acknowledged' => '1',
+        ]);
+
+        $response->assertSessionHasErrors('password');
+        $this->assertSame(0, DB::table('users')->where('username', 'test.weak')->count());
+    }
+
     public function test_registration_validation_does_not_create_partial_accounts(): void
     {
         $response = $this->post('/register', [
             'name' => 'Test User',
             'username' => 'test.user',
             'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-            'inisial' => 'TU',
+            'password' => 'Siswitest_01',
+            'password_confirmation' => 'Siswitest_01',
             'kelas' => 'XIII',
             'usia' => 16,
             'sekolah' => 'SMK Arga Husada',

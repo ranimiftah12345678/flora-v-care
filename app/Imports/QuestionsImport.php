@@ -16,10 +16,10 @@ class QuestionsImport implements ToCollection, WithHeadingRow
 
     public function collection(Collection $rows): void
     {
-        $pretest = Test::query()->where('type', 'pretest')->firstOrFail();
-        if ($pretest->attempts()->whereHas('answers')->exists()) {
+        $tests = Test::query()->whereIn('type', ['pretest', 'posttest'])->orderBy('type')->get();
+        if ($tests->contains(fn (Test $test): bool => $test->attempts()->whereHas('answers')->exists())) {
             throw ValidationException::withMessages([
-                'file' => 'Impor pertanyaan tidak dapat dilakukan setelah jawaban pretest masuk.',
+                'file' => 'Impor pertanyaan tidak dapat dilakukan setelah jawaban tes masuk.',
             ]);
         }
 
@@ -48,9 +48,11 @@ class QuestionsImport implements ToCollection, WithHeadingRow
                 'is_unfavorable' => $isUnfavorable,
                 'sort_order' => $data['sort_order'],
             ]);
-            $pretest->questions()->attach($question->id, [
-                'sort_order' => $pretest->questions()->count() + 1,
-            ]);
+            foreach ($tests as $test) {
+                $test->questions()->attach($question->id, [
+                    'sort_order' => $test->questions()->count() + 1,
+                ]);
+            }
             $this->importedCount++;
         }
     }

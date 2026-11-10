@@ -43,13 +43,8 @@
                         <legend>Profil siswi <span>Wajib diisi</span></legend>
                         <div class="form-grid">
                             <div class="form-field">
-                                <label for="inisial">Inisial Anonim <span>*</span></label>
-                                <input id="inisial" name="inisial" type="text" value="{{ old('inisial') }}" placeholder="Contoh: AR" maxlength="10" required autocomplete="off" aria-describedby="inisial-error">
-                                <x-input-error id="inisial-error" :messages="$errors->get('inisial')" class="field-error" />
-                            </div>
-                            <div class="form-field">
                                 <label for="username">Nama Pengguna <span>*</span></label>
-                                <input id="username" name="username" type="text" value="{{ old('username') }}" placeholder="Contoh: aulia.rahma" minlength="3" maxlength="50" pattern="[a-zA-Z0-9._-]+" required autocomplete="username" aria-describedby="username-error">
+                                <input id="username" name="username" type="text" value="{{ old('username') }}" placeholder="Contoh: aulia.rahma" maxlength="50" required autocomplete="username" aria-describedby="username-error">
                                 <x-input-error id="username-error" :messages="$errors->get('username')" class="field-error" />
                             </div>
                             <div class="form-field">
@@ -67,7 +62,7 @@
                                 </select>
                                 <x-input-error id="kelas-error" :messages="$errors->get('kelas')" class="field-error" />
                             </div>
-                            <div class="form-field form-span-two">
+                            <div class="form-field">
                                 <label for="sekolah">Sekolah <span>*</span></label>
                                 <input id="sekolah" name="sekolah" type="text" value="{{ old('sekolah', config('flora.school_name')) }}" maxlength="150" required autocomplete="organization" aria-describedby="sekolah-error">
                                 <x-input-error id="sekolah-error" :messages="$errors->get('sekolah')" class="field-error" />
@@ -76,13 +71,13 @@
                     </fieldset>
                     <div class="form-field form-span-two">
                         <label for="email">Email Akun <span>*</span></label>
-                        <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="nama@email.com" autocomplete="email" required aria-describedby="email-help email-error">
-                        <small id="email-help" class="field-help">Email disimpan sebagai kontak akun; pemulihan kata sandi melalui email belum tersedia.</small>
+                        <input id="email" name="email" type="email" value="{{ old('email') }}" placeholder="nama@email.com" autocomplete="email" required aria-describedby="email-error">
                         <x-input-error id="email-error" :messages="$errors->get('email')" class="field-error" />
                     </div>
                     <div class="form-field">
                         <label for="password">Kata Sandi <span>*</span></label>
-                        <input id="password" name="password" type="password" placeholder="Minimal 8 karakter" autocomplete="new-password" required aria-describedby="password-error">
+                        <input id="password" name="password" type="password" placeholder="Contoh: Siswitest_01" autocomplete="new-password" required aria-describedby="password-help password-error">
+                        <small id="password-help" class="field-help">Min. 8 karakter, kombinasi A-z, 0-9, dan simbol.</small>
                         <x-input-error id="password-error" :messages="$errors->get('password')" class="field-error" />
                     </div>
                     <div class="form-field">
@@ -101,10 +96,10 @@
                 </label>
                 <x-input-error id="privacy-consent-error" :messages="$errors->get('privacy_notice_acknowledged')" class="field-error" />
 
-                <button class="button auth-submit" type="submit">Daftar &amp; Mulai Pretest <span aria-hidden="true">→</span></button>
+                <button class="button auth-submit" type="submit">Daftar Akun Siswi <span aria-hidden="true">→</span></button>
             </form>
 
-            <div class="auth-switch"><span>Sudah memiliki akun?</span><a href="{{ route('login') }}">Masuk Siswa di Sini</a></div>
+            <div class="auth-switch"><span>Sudah memiliki akun siswi?</span><a href="{{ route('login') }}">Masuk ke Akun di Sini</a></div>
             <a class="help-link" href="{{ route('privacy') }}">Perlu bantuan? Baca informasi privasi</a>
         </section>
     </div>

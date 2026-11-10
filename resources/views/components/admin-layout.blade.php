@@ -1,6 +1,6 @@
 @props([
     'active' => 'dashboard',
-    'title' => 'Pratinjau Admin',
+    'title' => 'Dasbor Admin',
 ])
 
 <!DOCTYPE html>
@@ -9,14 +9,30 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#fff5f7">
-        <meta name="description" content="Pratinjau antarmuka administrasi Flora-V Care dengan data contoh.">
+        <meta name="description" content="Antarmuka administrasi Flora-V Care.">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
         <title>{{ $title }} · Flora-V Care Admin</title>
+        <script>
+            (function() {
+                var saved = localStorage.getItem('theme');
+                if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            })();
+        </script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="admin-portal">
+        <a class="skip-link" href="#main-content">Langsung ke konten</a>
         <aside class="admin-sidebar">
             <a class="admin-brand" href="{{ route('admin.dashboard') }}">
-                <span class="admin-brand-mark" aria-hidden="true">✿</span>
+                <span class="admin-brand-logos" aria-hidden="true">
+                    <img class="admin-brand-logo-img brand-logo-flora" src="{{ asset('assets/logo-flora-v-care.png') }}" alt="Logo Flora-V Care" width="32" height="32">
+                    <span class="admin-brand-logo-divider" aria-hidden="true"></span>
+                    <img class="admin-brand-logo-img brand-logo-stikes" src="{{ asset('assets/logo-stikes-karya-husada.png') }}" alt="Logo STIKes Karya Husada" width="32" height="32">
+                </span>
                 <span><strong>Flora-V Care</strong><small>ADMIN PORTAL</small></span>
             </a>
             <span class="admin-nav-caption">EDUKASI &amp; TATA KELOLA</span>
@@ -45,12 +61,13 @@
                     </nav>
                 </details>
                 <span class="admin-search-placeholder">⌕ <span>Cari siswi, materi, skor kuesioner…</span></span>
-                <span class="admin-date">◷ <span>Tanggal simulasi · WIB</span></span>
-                <span class="admin-notification" aria-label="Notifikasi pratinjau">♧</span>
-                <a class="admin-user" href="{{ route('admin.profile') }}">                <span class="admin-user-avatar">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span><span>{{ auth()->user()->name }}<small>Administrator</small></span></a>
+                <span class="admin-date">◷ <span>{{ now()->timezone('Asia/Jakarta')->translatedFormat('l, j F Y') }} · WIB</span></span>
+                <span class="admin-notification" aria-label="Notifikasi">♧</span>
+                <x-theme-toggle />
+                <a class="admin-user" href="{{ route('admin.profile') }}">                <span class="admin-user-avatar">@if ($avatar = auth()->user()->avatarUrl())<img src="{{ $avatar }}" alt="Foto profil" class="nav-avatar-photo admin-nav-avatar-photo">@else{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}@endif</span><span>{{ auth()->user()->name }}<small>Administrator</small></span></a>
             </header>
 
-            <main class="admin-main">
+            <main id="main-content" class="admin-main">
                 <div class="admin-preview-banner" role="status">
                     <strong>PANEL ADMIN</strong>
                     <span>Perubahan akun dan konten tersimpan. Hasil dan aktivitas ditampilkan dari data yang telah dikirim atau dicatat.</span>
@@ -60,7 +77,7 @@
             </main>
 
             <footer class="admin-footer">
-                <span>© 2025 Flora-V Care · Kenali, Pahami, Cegah</span>
+                <span>© {{ now()->year }} Flora-V Care · Kenali, Pahami, Cegah</span>
                 <a href="{{ route('home') }}">Kembali ke beranda publik ↗</a>
             </footer>
         </div>

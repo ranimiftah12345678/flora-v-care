@@ -140,7 +140,7 @@ class ReportController extends Controller
         DB::transaction(fn () => Excel::import($import, $request->file('file')));
         $logger->log('impor_pertanyaan', $request->user(), $import->importedCount.' pertanyaan diimpor');
 
-        return back()->with('status', $import->importedCount.' pertanyaan berhasil diimpor ke pretest.');
+        return back()->with('status', $import->importedCount.' pertanyaan berhasil diimpor ke pretest dan posttest.');
     }
 
     /**

@@ -62,12 +62,13 @@ class AdminImportTest extends TestCase
         $this->actingAs($admin)
             ->post(route('admin.questions.import'), ['file' => $file])
             ->assertRedirect()
-            ->assertSessionHas('status', '1 pertanyaan berhasil diimpor ke pretest.');
+            ->assertSessionHas('status', '1 pertanyaan berhasil diimpor ke pretest dan posttest.');
 
         $question = Question::query()->firstOrFail();
         $this->assertSame('Apakah materi ini jelas?', $question->question_text);
         $this->assertTrue($question->is_unfavorable);
         $this->assertTrue($question->tests()->where('type', 'pretest')->exists());
+        $this->assertTrue($question->tests()->where('type', 'posttest')->exists());
     }
 
     public function test_invalid_question_import_is_rolled_back(): void

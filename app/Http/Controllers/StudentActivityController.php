@@ -20,7 +20,7 @@ class StudentActivityController extends Controller
 {
     public function locked(Request $request): View
     {
-        $aliran = $request->query('aliran');
+        $aliran = session('aliran');
         $reason = in_array($aliran, ['pretest', 'progres'], true) ? $aliran : 'pretest';
 
         return view('student.locked', [

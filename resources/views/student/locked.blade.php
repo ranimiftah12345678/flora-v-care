@@ -11,7 +11,9 @@
                 <h1>Belum semua materi selesai</h1>
                 <p>Semua materi dan video harus selesai sebelum membuka posttest.</p>
             @endif
-            <a class="button" href="{{ route('dashboard') }}">Kembali ke Dasbor</a>
+            <div>
+                <a class="button button-small" href="{{ route('dashboard') }}">Kembali ke Dasbor</a>
+            </div>
         </section>
     </div>
 </x-student-layout>

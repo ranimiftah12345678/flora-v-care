@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class ProfileTest extends TestCase
@@ -76,5 +78,79 @@ class ProfileTest extends TestCase
             ->assertRedirect('/profile');
 
         $this->assertNotNull($user->fresh());
+    }
+
+    public function test_avatar_can_be_uploaded(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->post('/profile/avatar', [
+                'avatar' => UploadedFile::fake()->image('avatar.jpg'),
+            ]);
+
+        $response
+            ->assertSessionHasNoErrors()
+            ->assertRedirect('/profile')
+            ->assertSessionHas('status', 'avatar-updated');
+
+        $user->refresh();
+
+        $this->assertNotNull($user->avatar_path);
+        Storage::disk('public')->assertExists($user->avatar_path);
+    }
+
+    public function test_avatar_upload_replaces_previous_avatar(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create(['avatar_path' => 'avatars/old.jpg']);
+        Storage::disk('public')->put('avatars/old.jpg', 'old-avatar');
+
+        $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->post('/profile/avatar', [
+                'avatar' => UploadedFile::fake()->image('new-avatar.jpg'),
+            ]);
+
+        $user->refresh();
+
+        Storage::disk('public')->assertMissing('avatars/old.jpg');
+        Storage::disk('public')->assertExists($user->avatar_path);
+        $this->assertNotSame('avatars/old.jpg', $user->avatar_path);
+    }
+
+    public function test_avatar_upload_rejects_non_image_files(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->post('/profile/avatar', [
+                'avatar' => UploadedFile::fake()->create('notes.pdf', 100),
+            ]);
+
+        $response
+            ->assertSessionHasErrors(['avatar' => 'Berkas yang diunggah harus berupa gambar.'])
+            ->assertRedirect('/profile');
+
+        $this->assertNull($user->refresh()->avatar_path);
+    }
+
+    public function test_avatar_upload_requires_authentication(): void
+    {
+        Storage::fake('public');
+
+        $response = $this
+            ->post('/profile/avatar', [
+                'avatar' => UploadedFile::fake()->image('avatar.jpg'),
+            ]);
+
+        $response->assertRedirect('/login');
     }
 }

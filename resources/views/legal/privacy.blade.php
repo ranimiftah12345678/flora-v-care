@@ -11,7 +11,7 @@
 
         <aside class="privacy-draft-note" role="note">
             <strong>Catatan sebelum publikasi</strong>
-            <p>Halaman ini masih berupa rancangan. Kode aplikasi saat ini belum memiliki penyimpanan akun yang siap digunakan, profil siswi, data pretest/posttest, maupun autentikasi admin. Konfirmasi dasar etik, pengelolaan data, kontak petugas, dan mekanisme persetujuan sebelum kebijakan ini dipublikasikan.</p>
+            <p>Halaman ini masih berupa rancangan yang menunggu konfirmasi resmi. Dasar etik, masa retensi data, kontak petugas, dan mekanisme persetujuan perlu dikonfirmasi oleh sekolah dan institusi sebelum kebijakan ini dipublikasikan.</p>
         </aside>
 
         <div class="privacy-layout">
@@ -40,12 +40,12 @@
 
                 <section class="policy-section" id="data">
                     <span class="policy-number">2</span>
-                    <div><h2>Data yang Dikumpulkan &amp; Diproses</h2><p class="policy-lead">Aplikasi belum memiliki penyimpanan akun atau fitur evaluasi yang siap digunakan. Daftar berikut adalah rancangan, bukan pernyataan bahwa data tersebut telah dikumpulkan.</p>
+                    <div><h2>Data yang Dikumpulkan &amp; Diproses</h2><p class="policy-lead">Aplikasi menyimpan data berikut selama kamu menggunakan layanan. Data ini hanya dapat dilihat oleh administrator dan guru pendamping.</p>
                         <div class="policy-data-grid">
-                            <article class="policy-card"><h3>a. Data Identitas Akun</h3><ul><li>Formulir rancangan meminta nama dan email.</li><li>Nama pengguna, kelas, dan rentang usia belum terhubung ke penyimpanan.</li><li>Jangan mengirimkan data melalui halaman ini sebelum sistem siap.</li></ul></article>
-                            <article class="policy-card"><h3>b. Data Pembelajaran &amp; Modul</h3><ul><li>Progress modul dan materi belum tersimpan.</li><li>Riwayat video belum tersambung ke akun.</li><li>Fitur evaluasi belum terhubung ke basis data.</li></ul></article>
-                            <article class="policy-card"><h3>c. Evaluasi &amp; Instrumen Sikap</h3><ul><li>Instrumen pengetahuan masih berupa rancangan.</li><li>Skor pretest dan posttest belum dikumpulkan.</li><li>Mekanisme persetujuan harus disepakati sebelum penggunaan.</li></ul></article>
-                            <article class="policy-card"><h3>d. Data Teknis Sesi</h3><ul><li>Pengelolaan sesi mengikuti konfigurasi Laravel.</li><li>Rincian log dan masa simpan belum ditetapkan.</li><li>Dokumentasikan retensi sebelum sistem digunakan.</li></ul></article>
+                            <article class="policy-card"><h3>a. Data Identitas Akun</h3><ul><li>Nama, nama pengguna, dan email (opsional) yang kamu daftarkan.</li><li>Kata sandi disimpan dalam bentuk hash, bukan teks asli.</li><li>Inisial, kelas, rentang usia, dan sekolah disimpan sebagai profil siswi.</li></ul></article>
+                            <article class="policy-card"><h3>b. Data Pembelajaran &amp; Modul</h3><ul><li>Progres membuka dan menyelesaikan materi tercatat pada akunmu.</li><li>Riwayat memutar video edukasi tersambung ke akun.</li><li>Progres menentukan kapan posttest dapat dibuka.</li></ul></article>
+                            <article class="policy-card"><h3>c. Evaluasi &amp; Instrumen Sikap</h3><ul><li>Jawaban pretest dan posttest tersimpan untuk dianalisis.</li><li>Skor, tanggal pengiriman, dan jumlah upaya pengerjaan tercatat.</li><li>Analisis penelitian menggunakan ringkasan kelompok (agregat).</li></ul></article>
+                            <article class="policy-card"><h3>d. Data Teknis Sesi</h3><ul><li>Alamat IP, waktu masuk, dan ringkasan peramban tercatat pada riwayat sesi.</li><li>Aktivitas belajar dicatat pada log aktivitas.</li><li>Masa simpan data perlu ditetapkan sebelum penggunaan penelitian penuh.</li></ul></article>
                         </div>
                         <div class="policy-alert"><strong>Catatan Mutlak: Data Sensitif Tidak Dikumpulkan</strong><p>Platform tidak meminta informasi medis pribadi yang tidak relevan, lokasi presisi, kontak pribadi, maupun rekam medis.</p></div>
                     </div>
@@ -53,14 +53,14 @@
 
                 <section class="policy-section" id="tujuan">
                     <span class="policy-number">3</span>
-                    <div><h2>Tujuan Penggunaan Data Siswi</h2><div class="policy-card"><p>Jika pengumpulan data diaktifkan, tujuan dan dasar penggunaannya perlu diinformasikan dengan jelas sebelum partisipasi:</p><ul><li>Membantu siswi memahami materi secara progresif dan aman.</li><li>Mengevaluasi efektivitas modul dan video edukasi.</li><li>Meningkatkan kualitas materi pembelajaran kesehatan reproduksi.</li><li>Mendukung evaluasi program pendidikan bersama pihak sekolah dan institusi akademik.</li></ul></div></div>
+                    <div><h2>Tujuan Penggunaan Data Siswi</h2><div class="policy-card"><p>Tujuan dan dasar penggunaan data diinformasikan dengan jelas sebagai berikut:</p><ul><li>Membantu siswi memahami materi secara progresif dan aman.</li><li>Mengevaluasi efektivitas modul dan video edukasi.</li><li>Meningkatkan kualitas materi pembelajaran kesehatan reproduksi.</li><li>Mendukung evaluasi program pendidikan bersama pihak sekolah dan institusi akademik.</li></ul></div></div>
                 </section>
 
                 <section class="policy-section" id="anonimisasi">
                     <span class="policy-number">4</span>
-                    <div><h2>Mekanisme Anonimisasi Data Responden (De-Identification)</h2><div class="policy-card"><p>Pemisahan identitas dan data evaluasi perlu dibangun dan diuji sebelum fitur penelitian digunakan.</p>
-                        <div class="anonymization-flow"><span>Data Akun Terdaftar<small>Jika akun diaktifkan</small></span><b aria-hidden="true">→</b><span>Entri Evaluasi<small>Tanpa identitas langsung</small></span><b aria-hidden="true">→</b><span>Kode Responden<small>Metode perlu ditetapkan</small></span></div>
-                        <h3>Analisis Agregat</h3><p>Rancangan pelaporan harus menggunakan ringkasan kelompok dan tidak mengaitkan jawaban dengan identitas individu.</p>
+                    <div><h2>Mekanisme Anonimisasi Data Responden (De-Identification)</h2><div class="policy-card"><p>Laporan penelitian menggunakan ringkasan agregat kelompok dan tidak mengaitkan jawaban dengan identitas individu. Data akun dipakai hanya untuk pengelolaan kelas oleh administrator.</p>
+                        <div class="anonymization-flow"><span>Data Akun Terdaftar<small>Nama dan profil siswi</small></span><b aria-hidden="true">→</b><span>Entri Evaluasi<small>Terkait akun untuk pengelolaan</small></span><b aria-hidden="true">→</b><span>Laporan Agregat<small>Tanpa identitas individu</small></span></div>
+                        <h3>Analisis Agregat</h3><p>Pelaporan penelitian menggunakan ringkasan kelompok dan tidak mengaitkan jawaban dengan identitas individu.</p>
                     </div></div>
                 </section>
 
@@ -69,7 +69,7 @@
                     <div><h2>Protokol Keamanan Penyimpanan &amp; Enkripsi Data</h2><div class="policy-mini-grid security-policy-grid">
                         <article class="policy-card"><h3>Enkripsi Koneksi</h3><p>Konfigurasi HTTPS perlu dipastikan pada lingkungan produksi.</p></article>
                         <article class="policy-card"><h3>Penyimpanan Terbatas</h3><p>Masa simpan dan hak akses perlu ditetapkan sebelum pengumpulan data.</p></article>
-                        <article class="policy-card"><h3>Proteksi Akses</h3><p>Kontrol peran administrator belum tersedia dalam aplikasi saat ini.</p></article>
+                        <article class="policy-card"><h3>Proteksi Akses</h3><p>Akses data dibatasi peran: hanya administrator dan guru pendamping yang dapat melihat data siswi.</p></article>
                     </div></div>
                 </section>
 

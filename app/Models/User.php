@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'username', 'email', 'password'])]
+#[Fillable(['name', 'username', 'email', 'password', 'avatar_path'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -37,6 +37,18 @@ class User extends Authenticatable
     public function studentProfile(): HasOne
     {
         return $this->hasOne(StudentProfile::class);
+    }
+
+    /**
+     * URL foto profil pengguna (null jika belum mengunggah).
+     */
+    public function avatarUrl(): ?string
+    {
+        if (blank($this->avatar_path)) {
+            return null;
+        }
+
+        return asset('storage/'.$this->avatar_path);
     }
 
     public function activityLogs(): HasMany

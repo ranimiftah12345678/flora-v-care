@@ -87,8 +87,8 @@ class AdminAuthenticationTest extends TestCase
 
         $response = $this->put(route('password.update'), [
             'current_password' => 'password',
-            'password' => 'a-stronger-password',
-            'password_confirmation' => 'a-stronger-password',
+            'password' => 'Siswitest_02',
+            'password_confirmation' => 'Siswitest_02',
         ]);
 
         $response->assertRedirect(route('dashboard'));

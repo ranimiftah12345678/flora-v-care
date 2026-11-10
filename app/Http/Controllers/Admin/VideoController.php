@@ -30,7 +30,7 @@ class VideoController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'video_file' => ['required', 'file', 'mimes:mp4', 'mimetypes:video/mp4', 'max:204800'],
-            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
             'is_published' => ['nullable', 'boolean'],
         ]);
@@ -62,7 +62,7 @@ class VideoController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
             'video_file' => ['nullable', 'file', 'mimes:mp4', 'mimetypes:video/mp4', 'max:204800'],
-            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048],
+            'thumbnail' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
             'is_published' => ['nullable', 'boolean'],
         ]);

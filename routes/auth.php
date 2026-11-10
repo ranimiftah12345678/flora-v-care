@@ -6,22 +6,25 @@ use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('guest')->group(function () {
+Route::group([], function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
+        ->middleware('guest')
         ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store'])
-        ->middleware('throttle:10,1');
+        ->middleware(['guest', 'throttle:10,1']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        ->middleware('guest');
 
     Route::get('admin/masuk', [AdminAuthenticatedSessionController::class, 'create'])
         ->name('admin.login');
 
-    Route::post('admin/masuk', [AdminAuthenticatedSessionController::class, 'store']);
+    Route::post('admin/masuk', [AdminAuthenticatedSessionController::class, 'store'])
+        ->middleware('guest');
 });
 
 Route::middleware(['auth', 'active', 'activity', 'password.changed'])->group(function () {

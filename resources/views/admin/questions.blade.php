@@ -1,6 +1,6 @@
 <x-admin-layout title="Manajemen Pertanyaan Kuesioner" active="questions">
     <section class="admin-page-heading">
-        <div><span class="admin-eyebrow">INSTRUMEN PENELITIAN · BELUM DIVALIDASI</span><h1>Manajemen Pertanyaan Kuesioner</h1><p>Tulis setiap butir sebagai pertanyaan yang diakhiri tanda tanya. Pertanyaan baru otomatis dimasukkan ke pretest.</p></div>
+        <div><span class="admin-eyebrow">INSTRUMEN PENELITIAN · BELUM DIVALIDASI</span><h1>Manajemen Pertanyaan Kuesioner</h1><p>Tulis setiap butir sebagai pertanyaan yang diakhiri tanda tanya. Pertanyaan baru otomatis dimasukkan ke pretest dan posttest.</p></div>
         <div class="admin-heading-actions"><a class="admin-button admin-button-outline" href="#impor-pertanyaan">Impor Excel</a><a class="admin-button admin-button-outline" href="{{ route('admin.questions.export') }}">Ekspor analisis</a><a class="admin-button" href="{{ route('admin.questions.create') }}">＋ Tambah pertanyaan</a><a class="admin-button admin-button-outline" href="{{ route('admin.tests') }}">Pengaturan tes</a></div>
     </section>
     @if (session('status'))<div class="admin-feedback" role="status">{{ session('status') }}</div>@endif

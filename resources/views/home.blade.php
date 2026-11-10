@@ -8,27 +8,36 @@
 
         <title>Flora-V Care — Kenali. Pahami. Cegah.</title>
 
+        <script>
+            (function() {
+                var saved = localStorage.getItem('theme');
+                if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            })();
+        </script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body>
         <div class="announcement">
             <div class="container announcement-inner">
                 <p>Edukasi kesehatan reproduksi remaja, dengan cara yang nyaman dan tepercaya</p>
-                <a href="{{ route('login') }}">Masuk siswa <span aria-hidden="true">→</span></a>
+                <div class="announcement-links">
+                    <span>Flora-V Care · Edukasi Kesehatan Reproduksi</span>
+                </div>
             </div>
         </div>
 
         <header class="site-header" id="top">
             <div class="container nav-wrap">
                 <a class="brand" href="#top" aria-label="Flora-V Care, beranda">
-                    <span class="brand-mark" aria-hidden="true">
-                        <svg viewBox="0 0 40 40" fill="none">
-                            <path d="M20 20C10.8 18.9 8.4 12.2 12.3 8.5c3.2-3 7.3 1.1 7.7 11.5Z" fill="currentColor"/>
-                            <path d="M20 20c1.1-9.2 7.8-11.6 11.5-7.7 3 3.2-1.1 7.3-11.5 7.7Z" fill="currentColor" opacity=".72"/>
-                            <path d="M20 20c9.2 1.1 11.6 7.8 7.7 11.5-3.2 3-7.3-1.1-7.7-11.5Z" fill="currentColor" opacity=".52"/>
-                            <path d="M20 20c-1.1 9.2-7.8 11.6-11.5 7.7-3-3.2 1.1-7.3 11.5-7.7Z" fill="currentColor" opacity=".82"/>
-                            <circle cx="20" cy="20" r="3" fill="#FFF5F7"/>
-                        </svg>
+                    <span class="brand-logos" aria-hidden="true">
+                        <img class="brand-logo-img brand-logo-flora" src="{{ asset('assets/logo-flora-v-care.png') }}" alt="Logo Flora-V Care" width="38" height="38">
+                        <span class="brand-logo-divider" aria-hidden="true"></span>
+                        <img class="brand-logo-img brand-logo-stikes" src="{{ asset('assets/logo-stikes-karya-husada.png') }}" alt="Logo STIKes Karya Husada" width="38" height="38">
                     </span>
                     <span class="brand-copy"><strong>Flora-V Care</strong><small>Ruang belajar remaja</small></span>
                 </a>
@@ -42,8 +51,8 @@
                 </nav>
 
                 <div class="nav-actions">
-                    <a class="login-link" href="{{ route('login') }}">Masuk</a>
-                    <a class="button button-small" href="{{ route('register') }}">Mulai Belajar <span aria-hidden="true">↗</span></a>
+                    <x-theme-toggle />
+                    <a class="button button-small" href="{{ route('admin.login') }}">Dasbor Admin <span aria-hidden="true">↗</span></a>
                 </div>
 
                 <details class="mobile-menu">
@@ -53,8 +62,8 @@
                         <a href="#alur">Cara Belajar</a>
                         <a href="#materi">Materi</a>
                         <a href="#video">Video</a>
-                        <a href="{{ route('login') }}">Masuk siswa</a>
-                        <a href="{{ route('register') }}">Mulai belajar</a>
+                        <a href="{{ route('login') }}">Mulai Belajar</a>
+                        <a href="{{ route('admin.login') }}">Masuk Admin</a>
                     </nav>
                 </details>
             </div>
@@ -68,7 +77,7 @@
                         <h1>Kenali. Pahami.<br><em>Cegah.</em></h1>
                         <p class="hero-lead">Situs edukasi kesehatan reproduksi remaja untuk mengenali fisiologi tubuh, memahami gejala, dan mencegah keputihan patologis melalui pembiasaan higienitas mandiri yang benar.</p>
                         <div class="hero-actions">
-                            <a class="button" href="{{ route('register') }}">Mulai Belajar <span aria-hidden="true">→</span></a>
+                            <a class="button" href="{{ route('login') }}">Mulai Belajar <span aria-hidden="true">→</span></a>
                             <a class="button button-outline" href="#video"><span class="play-icon" aria-hidden="true">▶</span> Lihat cara belajar</a>
                         </div>
                         <div class="hero-trust">
@@ -80,13 +89,13 @@
 
                     <div class="hero-art" aria-label="Remaja belajar bersama dalam suasana yang nyaman">
                         <div class="photo-main">
-                            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=85" alt="Para remaja berdiskusi dalam suasana belajar yang nyaman">
+                            <img src="{{ asset('assets/image 1.jpg') }}" alt="Para remaja berdiskusi dalam suasana belajar yang nyaman">
                         </div>
                         <div class="photo-top">
-                            <img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?auto=format&fit=crop&w=600&q=85" alt="Siswi membaca buku di ruang belajar">
+                            <img src="{{ asset('assets/image 2.jpg') }}" alt="Siswi membaca buku di ruang belajar">
                         </div>
                         <div class="photo-bottom">
-                            <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=85" alt="Teman-teman belajar dan bertukar pikiran">
+                            <img src="{{ asset('assets/image 3.jpg') }}" alt="Teman-teman belajar dan bertukar pikiran">
                         </div>
                         <div class="floating-note">
                             <span class="note-icon" aria-hidden="true">✦</span>
@@ -161,9 +170,9 @@
 
             <section class="section pathway-section" id="alur">
                 <div class="container">
-                    <div class="section-heading heading-row">
-                        <div><span class="section-kicker">Metodologi interaktif</span><h2>Alur Pembelajaran Mandiri</h2></div>
-                        <p>Selesaikan setiap tahapan secara berurutan untuk memaksimalkan retensi materi dan memahami indikasi gangguan kesehatan reproduksi.</p>
+                    <div class="section-heading pathway-heading">
+                        <span class="section-kicker">Metodologi interaktif</span>
+                        <h2>Alur Pembelajaran Mandiri</h2>
                     </div>
 
                     <div class="pathway-grid">
@@ -188,6 +197,8 @@
                             <h3>Hasil</h3><p>Lihat profil perkembangan nilai dan rekomendasi personal kesehatanmu.</p><span class="path-link">Grafik Evaluasi <b aria-hidden="true">→</b></span>
                         </article>
                     </div>
+
+                    <p class="pathway-lead">Selesaikan setiap tahapan secara berurutan untuk memaksimalkan retensi materi dan memahami indikasi gangguan kesehatan reproduksi.</p>
                 </div>
             </section>
 
@@ -253,12 +264,15 @@
                             <h2>Mulai Perjalanan<br>Belajarmu Sekarang</h2>
                             <p>Ambil langkah awal dengan mengerjakan pretest untuk mengetahui wawasan awalmu, ikuti seluruh materi terstruktur, dan rasakan peningkatan pemahaman yang terukur.</p>
                             <div class="hero-actions">
-                                <a class="button button-white" href="{{ route('register') }}">Daftar &amp; Mulai Pretest <span aria-hidden="true">→</span></a>
-                                <a class="button button-ghost" href="{{ route('login') }}">Masuk Siswa <span aria-hidden="true">↗</span></a>
+                                <a class="button button-white" href="{{ route('login') }}">Mulai Belajar Siswi <span aria-hidden="true">→</span></a>
+                                <a class="button button-ghost" href="{{ route('register') }}">Daftar Baru <span aria-hidden="true">↗</span></a>
                             </div>
                             <div class="privacy-note"><span aria-hidden="true">ⓘ</span><p><strong>Catatan Medis:</strong> Seluruh materi di Flora-V Care bersifat edukatif (promotif dan preventif), bukan diagnosis klinis. Jika kamu mengalami keluhan yang menetap atau mengkhawatirkan, segera konsultasikan dengan bidan, dokter, atau tenaga kesehatan profesional.</p></div>
                         </div>
-                        <div class="cta-decoration" aria-hidden="true"><span>✿</span><i></i><b></b></div>
+                        <div class="cta-decoration" aria-hidden="true">
+                            <img class="cta-image" src="{{ asset('assets/image 4.jpg') }}" alt="Mulai Belajar Flora-V Care">
+                            <div class="cta-gradient-overlay"></div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -267,12 +281,19 @@
         <footer class="site-footer">
             <div class="container footer-grid">
                 <div class="footer-about">
-                    <a class="brand brand-footer" href="#top"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M20 20C10.8 18.9 8.4 12.2 12.3 8.5c3.2-3 7.3 1.1 7.7 11.5Z" fill="currentColor"/><path d="M20 20c1.1-9.2 7.8-11.6 11.5-7.7 3 3.2-1.1 7.3-11.5 7.7Z" fill="currentColor" opacity=".72"/><path d="M20 20c9.2 1.1 11.6 7.8 7.7 11.5-3.2 3-7.3-1.1-7.7-11.5Z" fill="currentColor" opacity=".52"/><path d="M20 20c-1.1 9.2-7.8 11.6-11.5 7.7-3-3.2 1.1-7.3 11.5-7.7Z" fill="currentColor" opacity=".82"/></svg></span><span class="brand-copy"><strong>Flora-V Care</strong><small>Kenali, Pahami, Cegah</small></span></a>
+                    <a class="brand brand-footer" href="#top">
+                        <span class="brand-logos" aria-hidden="true">
+                            <img class="brand-logo-img brand-logo-flora" src="{{ asset('assets/logo-flora-v-care.png') }}" alt="Logo Flora-V Care" width="32" height="32">
+                            <span class="brand-logo-divider" aria-hidden="true"></span>
+                            <img class="brand-logo-img brand-logo-stikes" src="{{ asset('assets/logo-stikes-karya-husada.png') }}" alt="Logo STIKes Karya Husada" width="32" height="32">
+                        </span>
+                        <span class="brand-copy"><strong>Flora-V Care</strong><small>Kenali, Pahami, Cegah</small></span>
+                    </a>
                     <p>Platform media edukasi kesehatan reproduksi dan higienitas kewanitaan remaja yang ilmiah, terpercaya, aman, dan bebas stigma.</p>
                     <strong class="footer-motto">Dikembangkan oleh tim Flora-V Care</strong>
                 </div>
                 <div><h2>Menu Cepat</h2><a href="#top">Beranda</a><a href="#tentang">Apa Itu Keputihan</a><a href="#materi">Jenis Keputihan</a><a href="#materi">Tanda &amp; Gejala</a><a href="#materi">Cara Pencegahan</a><a href="#video">Video Edukasi</a></div>
-                <div><h2>Portal Siswi</h2><a href="{{ route('login') }}">Dashboard Belajar</a><a href="{{ route('register') }}">Pretest</a><a href="#materi">Posttest</a><a href="#materi">Progress Belajar</a><a href="#alur">Hasil &amp; Evaluasi</a><a href="{{ route('privacy') }}">Kebijakan Privasi</a></div>
+                <div><h2>Portal Edukasi</h2><a href="{{ route('login') }}">Masuk Siswi</a><a href="{{ route('admin.login') }}">Masuk Admin</a><a href="{{ route('register') }}">Daftar Baru</a><a href="{{ route('privacy') }}">Kebijakan Privasi</a></div>
                 <div><h2>Informasi &amp; Bantuan</h2><a href="#tentang">SMK Arga Husada</a><a href="#tentang">STIKes Karya Husada</a><a href="#tentang">Konsultasi dan Pengaduan</a><a href="#tentang">Ketentuan Pengguna</a></div>
             </div>
             <div class="container footer-bottom"><span>© 2025 Flora-V Care. Hak Cipta Dilindungi.</span><span>Materi ini bersifat edukasi, bukan diagnosis medis.</span></div>
