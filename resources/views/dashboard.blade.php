@@ -3,7 +3,7 @@
         <section class="student-welcome">
             <div>
                 <span class="student-eyebrow"><span class="status-dot"></span> Akun belajar siswi</span>
-                <h1>Halo, {{ auth()->user()->name }} <span aria-hidden="true">🌷</span></h1>
+                <h1>Halo, {{ auth()->user()->name }}</h1>
                 <p>Selamat datang di ruang belajarmu. Pelajari materi secara bertahap dan tanyakan kepada tenaga kesehatan bila ada hal yang membuatmu khawatir.</p>
                 <div class="welcome-meta"><span>Informasi edukasi</span><span>Privasi belajar dijaga</span><span>Progres {{ $progressPercent }}%</span></div>
             </div>
