@@ -66,8 +66,12 @@ class StudentActivityController extends Controller
         return ((int) $attempt->total_score >= (int) $attempt->test->attitude_threshold) ? 'mampu' : 'belum_mampu';
     }
 
-    public function videos(Request $request): View
+    public function videos(Request $request, ProgressService $progressService): View|RedirectResponse
     {
+        if (! $progressService->hasCompletedAllMaterials($request->user())) {
+            return redirect()->route('student.locked')->with('aliran', 'progres');
+        }
+
         return view('student.video', [
             'videos' => Video::query()
                 ->where('is_published', true)
@@ -129,7 +133,7 @@ class StudentActivityController extends Controller
     {
         abort_unless(in_array($testType, ['pretest', 'posttest'], true), 404);
         $test = Test::query()->where('type', $testType)->firstOrFail();
-        abort_unless($test->is_open && $test->questions()->count() > 30, 403, 'Tes belum dibuka atau belum memiliki jumlah pertanyaan yang cukup.');
+        abort_unless($test->is_open && $test->questions()->count() > 0, 403, 'Tes belum dibuka atau belum memiliki pertanyaan.');
         if ($testType === 'posttest') {
             $hasCompletedPretest = $request->user()->testAttempts()
                 ->whereHas('test', fn ($query) => $query->where('type', 'pretest'))

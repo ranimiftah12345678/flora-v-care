@@ -15,7 +15,7 @@ class TestService
     public function startAttempt(User $user, string $type): TestAttempt
     {
         $test = Test::query()->where('type', $type)->firstOrFail();
-        abort_unless($test->is_open && $test->questions()->count() > 30, 403, 'Tes belum dibuka atau belum memiliki jumlah pertanyaan yang cukup.');
+        abort_unless($test->is_open && $test->questions()->count() > 0, 403, 'Tes belum dibuka atau belum memiliki pertanyaan.');
 
         $attempt = $user->testAttempts()->where('test_id', $test->id)->whereNull('submitted_at')->latest('id')->first();
 
@@ -70,7 +70,7 @@ class TestService
 
             $expectedCount = $lockedAttempt->test->questions()->count();
             $answers = $lockedAttempt->answers()->lockForUpdate()->get();
-            abort_if($expectedCount <= 30, 403, 'Tes belum memiliki jumlah pertanyaan yang cukup.');
+            abort_if($expectedCount === 0, 403, 'Tes belum memiliki pertanyaan.');
             if ($answers->count() !== $expectedCount) {
                 throw ValidationException::withMessages([
                     'answers' => 'Jawab semua pertanyaan sebelum mengirim tes.',

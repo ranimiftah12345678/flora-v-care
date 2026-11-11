@@ -38,33 +38,37 @@
             <span class="admin-nav-caption">EDUKASI &amp; TATA KELOLA</span>
             <nav class="admin-nav" aria-label="Navigasi admin">
                 <a @class(['active' => $active === 'dashboard']) href="{{ route('admin.dashboard') }}"><span aria-hidden="true">▦</span> Dasbor</a>
-                <a @class(['active' => $active === 'students']) href="{{ route('admin.students') }}"><span aria-hidden="true">♧</span> Siswi</a>
-                <a @class(['active' => $active === 'materials']) href="{{ route('admin.materials') }}"><span aria-hidden="true">▤</span> Materi</a>
-                <a @class(['active' => $active === 'videos']) href="{{ route('admin.videos') }}"><span aria-hidden="true">▷</span> Video</a>
-                <a @class(['active' => $active === 'questions']) href="{{ route('admin.questions') }}"><span aria-hidden="true">☷</span> Pertanyaan Kuesioner</a>
-                <a @class(['active' => $active === 'tests']) href="{{ route('admin.tests') }}"><span aria-hidden="true">☷</span> Pengaturan Tes</a>
-                <a @class(['active' => $active === 'results']) href="{{ route('admin.paired-results') }}"><span aria-hidden="true">▣</span> Hasil Tes</a>
                 <a @class(['active' => $active === 'activity']) href="{{ route('admin.activity') }}"><span aria-hidden="true">◴</span> Aktivitas</a>
-                <a @class(['active' => $active === 'reports']) href="{{ route('admin.reports') }}"><span aria-hidden="true">▧</span> Laporan</a>
-                <a @class(['active' => $active === 'settings']) href="{{ route('admin.settings') }}"><span aria-hidden="true">⚙</span> Pengaturan Situs</a>
+                <a @class(['active' => $active === 'content']) href="{{ route('admin.content') }}"><span aria-hidden="true">✎</span> Kelola Konten</a>
             </nav>
             <div class="admin-sidebar-note"><span aria-hidden="true">◇</span><div><strong>SMK Arga Husada</strong><small>Karya Husada Partner</small></div></div>
         </aside>
 
         <div class="admin-workspace">
             <header class="admin-topbar">
-                <a class="admin-mobile-brand" href="{{ route('admin.dashboard') }}">Flora-V Care <small>Admin</small></a>
-                <details class="admin-mobile-menu">
-                    <summary aria-label="Buka navigasi admin"><span>☰</span></summary>
-                    <nav aria-label="Navigasi admin seluler">
-                        <a href="{{ route('admin.dashboard') }}">Dasbor</a><a href="{{ route('admin.students') }}">Siswi</a><a href="{{ route('admin.materials') }}">Materi</a><a href="{{ route('admin.videos') }}">Video</a><a href="{{ route('admin.questions') }}">Pertanyaan</a><a href="{{ route('admin.tests') }}">Pengaturan tes</a><a href="{{ route('admin.paired-results') }}">Hasil tes</a><a href="{{ route('admin.activity') }}">Aktivitas</a><a href="{{ route('admin.reports') }}">Laporan</a><a href="{{ route('admin.settings') }}">Pengaturan situs</a><a href="{{ route('admin.profile') }}">Profil admin</a>
-                    </nav>
-                </details>
                 <span class="admin-search-placeholder">⌕ <span>Cari siswi, materi, skor kuesioner…</span></span>
                 <span class="admin-date">◷ <span>{{ now()->timezone('Asia/Jakarta')->translatedFormat('l, j F Y') }} · WIB</span></span>
                 <span class="admin-notification" aria-label="Notifikasi">♧</span>
                 <x-theme-toggle />
-                <a class="admin-user" href="{{ route('admin.profile') }}">                <span class="admin-user-avatar">@if ($avatar = auth()->user()->avatarUrl())<img src="{{ $avatar }}" alt="Foto profil" class="nav-avatar-photo admin-nav-avatar-photo">@else{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}@endif</span><span>{{ auth()->user()->name }}<small>Administrator</small></span></a>
+                <a class="admin-user" href="{{ route('admin.profile') }}" title="Kelola Profil & Keamanan">
+                    <span class="admin-user-avatar">
+                        @if ($avatar = auth()->user()->avatarUrl())
+                            <img src="{{ $avatar }}" alt="Foto profil {{ auth()->user()->name }}" class="nav-avatar-photo admin-nav-avatar-photo" style="width: 100%; height: 100%; object-fit: cover; object-position: center 20%; border-radius: 50%;">
+                        @else
+                            {{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}
+                        @endif
+                    </span>
+                    <span class="admin-user-info">
+                        <span class="admin-user-name">{{ auth()->user()->name }}</span>
+                        <span class="admin-user-role">Administrator</span>
+                    </span>
+                </a>
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0; display: inline-flex;">
+                    @csrf
+                    <button type="submit" class="admin-button admin-button-outline" title="Keluar dari akun admin" style="min-height: 34px; padding: 0 12px; font-size: 12px; border-radius: 8px;">
+                        Keluar ⎋
+                    </button>
+                </form>
             </header>
 
             <main id="main-content" class="admin-main">

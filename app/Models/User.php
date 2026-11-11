@@ -42,13 +42,18 @@ class User extends Authenticatable
     /**
      * URL foto profil pengguna (null jika belum mengunggah).
      */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
     public function avatarUrl(): ?string
     {
-        if (blank($this->avatar_path)) {
-            return null;
+        if (filled($this->avatar_path)) {
+            return asset('storage/'.$this->avatar_path);
         }
 
-        return asset('storage/'.$this->avatar_path);
+        return null;
     }
 
     public function activityLogs(): HasMany

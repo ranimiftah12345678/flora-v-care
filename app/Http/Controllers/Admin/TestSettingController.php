@@ -38,7 +38,7 @@ class TestSettingController extends Controller
             'title' => ['required', 'string', 'max:255'],
             'instructions' => ['nullable', 'string', 'max:5000'],
             'max_attempts' => ['required', 'integer', 'between:1,10'],
-            'attitude_threshold' => ['nullable', 'integer', 'between:30,120'],
+            'attitude_threshold' => ['nullable', 'integer', 'min:0', 'max:1000'],
             'is_open' => ['nullable', 'boolean'],
             'question_ids' => ['nullable', 'array'],
             'question_ids.*' => ['required', 'integer', 'distinct', Rule::exists('questions', 'id')],
@@ -47,9 +47,9 @@ class TestSettingController extends Controller
         $test = Test::query()->where('type', $type)->firstOrFail();
         $questionIds = array_map('intval', $validated['question_ids'] ?? []);
 
-        if (($validated['is_open'] ?? false) && count($questionIds) <= 30) {
+        if (($validated['is_open'] ?? false) && count($questionIds) === 0) {
             return back()->withErrors([
-                'question_ids' => 'Tes hanya dapat dibuka jika memiliki lebih dari 30 pertanyaan.',
+                'question_ids' => 'Tes hanya dapat dibuka jika memiliki minimal 1 pertanyaan.',
             ])->withInput();
         }
 

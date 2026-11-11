@@ -42,6 +42,22 @@ class ProgressService
         return $progress;
     }
 
+    public function hasCompletedAllMaterials(User $user): bool
+    {
+        $publishedMaterialIds = Material::query()->where('is_published', true)->pluck('id');
+        if ($publishedMaterialIds->isEmpty()) {
+            return true;
+        }
+
+        $completedCount = $user->learningProgress()
+            ->where('content_type', 'material')
+            ->whereNotNull('completed_at')
+            ->whereIn('content_id', $publishedMaterialIds)
+            ->count();
+
+        return $completedCount >= $publishedMaterialIds->count();
+    }
+
     public function percentage(User $user): int
     {
         $publishedMaterialIds = Material::query()->where('is_published', true)->select('id');

@@ -17,8 +17,13 @@ class ActivityLogger
         ?string $description = null,
         ?Model $subject = null,
     ): ActivityLog {
+        $visitorName = $this->request->session()->get('visitor_name');
+        $visitorEmail = $this->request->session()->get('visitor_email');
+
         return ActivityLog::query()->create([
             'user_id' => ($user ?? $this->request->user())?->getAuthIdentifier(),
+            'visitor_name' => $visitorName ?: ($user?->name ?? null),
+            'visitor_email' => $visitorEmail ?: ($user?->email ?? null),
             'action' => $action,
             'subject_type' => $subject?->getMorphClass(),
             'subject_id' => $subject?->getKey(),

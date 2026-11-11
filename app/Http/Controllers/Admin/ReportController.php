@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\QuestionsExport;
+use App\Exports\RawAnswersExport;
+use App\Exports\RawMatrixMultipleExport;
 use App\Exports\StudentReportExport;
 use App\Http\Controllers\Controller;
 use App\Imports\QuestionsImport;
@@ -27,14 +29,54 @@ class ReportController extends Controller
     {
         $rows = $this->pairedRows($request);
 
+        $studentsStatus = User::query()
+            ->where('role', 'siswi')
+            ->with(['studentProfile', 'testAttempts.test'])
+            ->when($request->filled('kelas'), fn (Builder $query) => $query->whereHas(
+                'studentProfile',
+                fn (Builder $profileQuery) => $profileQuery->where('kelas', $request->string('kelas')->toString()),
+            ))
+            ->when($request->filled('q'), function (Builder $query) use ($request): void {
+                $search = '%'.$request->string('q')->toString().'%';
+                $query->where(function (Builder $query) use ($search): void {
+                    $query->where('name', 'like', $search)
+                        ->orWhere('username', 'like', $search)
+                        ->orWhereHas('studentProfile', fn (Builder $profile) => $profile->where('inisial', 'like', $search));
+                });
+            })
+            ->orderBy('name')
+            ->get()
+            ->map(function (User $student): array {
+                $attempts = $student->testAttempts->whereNotNull('submitted_at')->groupBy(fn ($a) => $a->test->type);
+                $pretest = $attempts->get('pretest')?->first();
+                $posttest = $attempts->get('posttest')?->first();
+
+                return [
+                    'student' => $student,
+                    'pretest' => $pretest,
+                    'posttest' => $posttest,
+                ];
+            });
+
         return view('admin.reports', [
             'rows' => $rows,
+            'studentsStatus' => $studentsStatus,
             'classSummaries' => $rows->groupBy('kelas')->map(fn (Collection $classRows): array => [
                 'count' => $classRows->count(),
                 'pretest' => round($classRows->avg('pretest'), 2),
                 'posttest' => round($classRows->avg('posttest'), 2),
             ]),
         ]);
+    }
+
+    public function exportRawAnswers(Request $request): BinaryFileResponse
+    {
+        $type = $request->query('type');
+        if ($type === 'pretest' || $type === 'posttest') {
+            return Excel::download(new RawAnswersExport($type), "jawaban-mentah-{$type}.xlsx");
+        }
+
+        return Excel::download(new RawMatrixMultipleExport, 'matriks-jawaban-siswi-lengkap.xlsx');
     }
 
     public function pairedResults(Request $request): View

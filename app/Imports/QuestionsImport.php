@@ -26,12 +26,10 @@ class QuestionsImport implements ToCollection, WithHeadingRow
         foreach ($rows as $index => $row) {
             $attributes = $row->toArray();
             $validator = Validator::make($attributes, [
-                'question_text' => ['required', 'string', 'max:2000', 'regex:/\?$/u'],
+                'question_text' => ['required', 'string', 'max:2000'],
                 'aspect' => ['required', 'in:kognitif,afektif,konatif'],
                 'is_unfavorable' => ['required', 'in:0,1,positif,negatif,true,false'],
                 'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
-            ], [
-                'question_text.regex' => 'Pertanyaan harus diakhiri tanda tanya.',
             ]);
 
             if ($validator->fails()) {

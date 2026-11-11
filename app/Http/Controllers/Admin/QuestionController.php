@@ -37,17 +37,19 @@ class QuestionController extends Controller
             : $request->input('question_text')]);
 
         $validated = $request->validate([
-            'question_text' => ['required', 'string', 'max:1000', 'regex:/\?$/u'],
+            'question_text' => ['required', 'string', 'max:1000'],
             'aspect' => ['nullable', Rule::in(self::ASPECTS)],
             'is_unfavorable' => ['nullable', 'boolean'],
-            'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
-        ], [
-            'question_text.regex' => 'Tuliskan butir sebagai pertanyaan dan akhiri dengan tanda tanya.',
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:10000'],
         ]);
 
-        DB::transaction(function () use ($validated): void {
+        $maxSortOrder = Question::query()->max('sort_order') ?? 0;
+
+        DB::transaction(function () use ($validated, $maxSortOrder): void {
             $question = Question::query()->create([
                 ...$validated,
+                'aspect' => $validated['aspect'] ?? 'kognitif',
+                'sort_order' => $validated['sort_order'] ?? ($maxSortOrder + 1),
                 'is_unfavorable' => (bool) ($validated['is_unfavorable'] ?? false),
             ]);
 
@@ -79,21 +81,26 @@ class QuestionController extends Controller
             : $request->input('question_text')]);
 
         $rules = [
-            'question_text' => ['required', 'string', 'max:1000', 'regex:/\?$/u'],
+            'question_text' => ['required', 'string', 'max:1000'],
             'aspect' => ['nullable', Rule::in(self::ASPECTS)],
-            'sort_order' => ['required', 'integer', 'min:0', 'max:10000'],
+            'sort_order' => ['nullable', 'integer', 'min:0', 'max:10000'],
         ];
 
         if (! $question->attemptAnswers()->exists()) {
             $rules['is_unfavorable'] = ['nullable', 'boolean'];
         }
 
-        $validated = $request->validate($rules, [
-            'question_text.regex' => 'Tuliskan butir sebagai pertanyaan dan akhiri dengan tanda tanya.',
-        ]);
+        $validated = $request->validate($rules);
 
         if (! $question->attemptAnswers()->exists()) {
-            $validated['is_unfavorable'] = (bool) ($validated['is_unfavorable'] ?? false);
+            $validated['is_unfavorable'] = (bool) ($validated['is_unfavorable'] ?? $question->is_unfavorable ?? false);
+        }
+
+        if (empty($validated['sort_order'])) {
+            unset($validated['sort_order']);
+        }
+        if (empty($validated['aspect'])) {
+            unset($validated['aspect']);
         }
 
         $question->update($validated);
